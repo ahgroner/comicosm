@@ -1,4 +1,5 @@
 import { type SVGProps } from "react";
+import comicosm2 from './assets/comicosm2.jpg'
 
 interface IProps extends SVGProps<SVGSVGElement> {}
 
@@ -8,11 +9,19 @@ const Comicosm = (props: IProps) => {
       xmlns="http://www.w3.org/2000/svg"
       width="4096"
       height="3186"
-      fill="none"
+      fill="white"
       className="Comicosm"
       viewBox="0 0 4096 3186"
       {...props}
     >
+      <image
+        href={comicosm2}
+        width="4096"
+        height="3186"
+        x="0"
+        y="0"
+        preserveAspectRatio="xMidYMid slice"
+      />
       <path
         stroke="#000"
         d="m454 312.5-2 5.5h-11.5v6l4 7-4 5.5v15L436 353l-3-3.5-6.5-3h-6L415 348l-3.5 3.5v-15l1-7 2.5-2.5-2.5-4.5 8 1.5v-8.5l2.5-4.5-5.5-6 1-6.5 4.5-7 7-3-1-3.5-8.5-4 10.5-2.5 9.5 1 9.5 7.5 4 9z"
