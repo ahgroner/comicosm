@@ -13,8 +13,11 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^6.4.7",
-    "@visx/clip-path": "file:visx/event@visx/mock-data@visx/responsive@visx/scale@visx/zoom",
+    "@visx/clip-path": "^3.12.0",
     "@visx/event": "^3.12.0",
+    "@visx/mock-data": "^3.12.0",
+    "@visx/responsive": "^3.12.0",
+    "@visx/scale": "^3.12.0",
     "@visx/zoom": "^3.12.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
