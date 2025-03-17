@@ -12,7 +12,7 @@ const width = 800;
 const height = 800;
 function App() {
   const [hoverCharacter, setHoverCharacter] = React.useState("Pearl");
-  const [showMiniMap, setShowMiniMap] = React.useState(false);
+  // const [showMiniMap, setShowMiniMap] = React.useState(true);
   const handleMouseOver = (e) => {
     console.log(e.target.className.baseVal);
     setHoverCharacter(e.target.className.baseVal);
@@ -105,7 +105,14 @@ function App() {
                       }}
                     />
                   </svg>
-                  <div className="controls">
+                  <Stack
+                    sx={{
+                      direction: "row",
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                    }}
+                  >
                     <button
                       type="button"
                       className="btn btn-zoom"
@@ -123,26 +130,12 @@ function App() {
                     <button
                       type="button"
                       className="btn btn-lg"
-                      onClick={zoom.center}
-                    >
-                      Center
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-lg"
                       onClick={zoom.reset}
                     >
                       Reset
                     </button>
-                    <button
-                      type="button"
-                      className="btn btn-lg"
-                      onClick={zoom.clear}
-                    >
-                      Clear
-                    </button>
-                  </div>
-                  <div className="mini-map">
+                  </Stack>
+                  {/* <div className="mini-map">
                     <button
                       type="button"
                       className="btn btn-lg"
@@ -150,7 +143,7 @@ function App() {
                     >
                       {showMiniMap ? "Hide" : "Show"} Mini Map
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </Zoom>
