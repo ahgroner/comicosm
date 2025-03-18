@@ -69,7 +69,7 @@ function App() {
                   fill="none"
                   viewBox="0 0 4096 3186"
                   onMouseOver={handleMouseOver}
-                  onClick={!zoom.isDragging && handleClick}
+                  onClick={!zoom.isDragging ? handleClick : undefined}
                   style={{
                     cursor: zoom.isDragging ? "grabbing" : "grab",
                     touchAction: "none",
@@ -119,6 +119,7 @@ function App() {
                     variant="contained"
                     orientation="vertical"
                     sx={{
+                      padding: 1,
                       opacity: 0.7,
                       "&:hover": {
                         opacity: 1,
