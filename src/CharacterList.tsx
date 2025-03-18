@@ -6,6 +6,10 @@ import {
   Stack,
   TextField,
   Typography,
+  Button,
+  IconButton,
+  Box,
+  Fab,
 } from "@mui/material";
 import {
   CharacterPortrait,
@@ -15,6 +19,11 @@ import {
 import { formatName } from "./utils";
 import tvStatic from "./assets/tv-static.gif";
 import { SIDEBAR_WIDTH } from "./constants";
+import {
+  CloseRounded,
+  PsychologyAltRounded,
+  ShuffleRounded,
+} from "@mui/icons-material";
 
 type CharacterListProps = {
   hoverCharacter: string;
@@ -38,6 +47,11 @@ export const CharacterList: React.FC<CharacterListProps> = ({
     : uniqueCharacters;
 
   const shownCharacter = hoverCharacter || activeCharacter;
+
+  const handleRandomCharacter = () => {
+    const randomIndex = Math.floor(Math.random() * uniqueCharacters.length);
+    setActiveCharacter(uniqueCharacters[randomIndex]);
+  };
 
   return (
     <Stack
@@ -70,6 +84,7 @@ export const CharacterList: React.FC<CharacterListProps> = ({
     >
       <Stack
         sx={{
+          gap: 1,
           p: 1,
           position: "sticky",
           backgroundColor: (theme) => theme.palette.primary.main,
@@ -77,23 +92,63 @@ export const CharacterList: React.FC<CharacterListProps> = ({
           zIndex: 1000,
         }}
       >
-        <Typography variant="h6" sx={{ color: "white" }}>
-          {shownCharacter ? formatName(shownCharacter) : "COMICOSM 2"}
-        </Typography>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography variant="h6" sx={{ color: "white" }}>
+            {shownCharacter ? formatName(shownCharacter) : "COMICOSM 2"}
+          </Typography>
+          <Fab
+            size="small"
+            onClick={() => setActiveCharacter("")}
+            sx={{
+              borderRadius: 1000,
+              color: "white",
+              visibility: shownCharacter ? "visible" : "hidden",
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.3)",
+              },
+            }}
+          >
+            <CloseRounded
+              fontSize="small"
+              sx={{ width: "16px", height: "16px" }}
+            />
+          </Fab>
+        </Stack>
         {shownCharacter ? (
           <>
             <CharacterPortrait id={shownCharacter} />
           </>
         ) : (
-          <img
-            src={tvStatic}
-            style={{
-              borderRadius: 30,
-            }}
-            height={CONTAINER_HEIGHT}
-            width={CONTAINER_WIDTH}
-          />
+          <Stack spacing={1}>
+            <img
+              src={tvStatic}
+              style={{
+                borderRadius: 30,
+              }}
+              height={CONTAINER_HEIGHT}
+              width={CONTAINER_WIDTH}
+            />
+          </Stack>
         )}
+        <Button
+          variant="contained"
+          onClick={handleRandomCharacter}
+          startIcon={<PsychologyAltRounded />}
+          sx={{
+            borderRadius: 1000,
+            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.3)",
+            },
+          }}
+        >
+          Random Character
+        </Button>
         <TextField
           size="small"
           sx={{
@@ -102,7 +157,6 @@ export const CharacterList: React.FC<CharacterListProps> = ({
               backgroundColor: "white",
             },
             width: "100%",
-            padding: 1,
           }}
           placeholder="Search for characters"
           onChange={(e) => setSearch(e.target.value)}

@@ -10,40 +10,45 @@ import comicosm2 from "./assets/comicosm2.jpg";
 import { ThemeProvider } from "./ThemeProvider";
 import { CharacterList } from "./CharacterList";
 import { useScreenSize } from "./hooks/useScreenSize";
+import { SIDEBAR_WIDTH } from "./constants";
 
 function App() {
   const dimensions = useScreenSize();
 
-  const [hoverCharacter, setHoverCharacter] = React.useState("Pearl");
-  const [activeCharacter, setActiveCharacter] = React.useState("Pearl");
+  const [hoverCharacter, setHoverCharacter] = React.useState("");
+  const [activeCharacter, setActiveCharacter] = React.useState("");
   // const [showMiniMap, setShowMiniMap] = React.useState(true);
   const handleMouseOver = (e: React.MouseEvent<SVGElement>) => {
-    setHoverCharacter(e.target.className.baseVal);
+    const target = e.target as SVGPathElement;
+    setHoverCharacter(target.className.baseVal);
   };
   const handleClick = (e: React.MouseEvent<SVGElement>) => {
-    setActiveCharacter(e.target.className.baseVal);
+    const target = e.target as SVGPathElement;
+    setActiveCharacter(target.className.baseVal);
   };
 
   const initialTransform = {
-    scaleX: 1,
-    scaleY: 1,
-    translateX: 0,
-    translateY: 0,
+    scaleX: 1.15,
+    scaleY: 1.15,
+    translateX: -360,
+    translateY: -220,
     skewX: 0,
     skewY: 0,
   };
+
+  const width = dimensions.width - SIDEBAR_WIDTH;
 
   return (
     <ThemeProvider>
       <div>
         <div style={{ position: "absolute" }}>
           <Zoom<SVGSVGElement>
-            width={dimensions.width}
+            width={width}
             height={dimensions.height}
-            scaleXMin={1}
-            scaleXMax={10}
-            scaleYMin={1}
-            scaleYMax={10}
+            scaleXMin={0.6}
+            scaleXMax={12}
+            scaleYMin={0.6}
+            scaleYMax={12}
             initialTransformMatrix={initialTransform}
           >
             {(zoom) => (
@@ -57,22 +62,29 @@ function App() {
                     [`&.${hoverCharacter || "IGNORE"}`]: {
                       stroke: "rgb(255,242,0)",
                       strokeWidth: 3,
+                      strokeLinejoin: "round",
+                      strokeLinecap: "round",
+                      strokeAlignment: "outer",
                     },
                     [`&.${activeCharacter || "IGNORE"}`]: {
-                      stroke: "rgb(255,242,0)",
+                      stroke: "rgb(255,242,0)", 
                       strokeWidth: 3,
+                      strokeLinejoin: "round",
+                      strokeLinecap: "round",
+                      strokeAlignment: "outer",
                     },
                   },
                 }}
               >
+                {/* {zoom.toString()} */}
                 <svg
-                  width={dimensions.width}
+                  width={width}
                   height={dimensions.height}
                   fill="none"
                   viewBox="0 0 4096 3186"
                   onMouseOver={handleMouseOver}
                   onMouseDown={handleClick}
-                  onClick={!zoom.isDragging ? handleClick : undefined}
+                  // onClick={!zoom.isDragging ? handleClick : undefined}
                   style={{
                     cursor: zoom.isDragging ? "grabbing" : "grab",
                     touchAction: "none",
@@ -81,11 +93,11 @@ function App() {
                 >
                   <RectClipPath
                     id="zoom-clip"
-                    width={dimensions.width}
+                    width={width}
                     height={dimensions.height}
                   />
                   <rect
-                    width={dimensions.width}
+                    width={width}
                     height={dimensions.height}
                     rx={14}
                   />
@@ -99,22 +111,34 @@ function App() {
                     <CharacterPaths />
                   </g>
                   <rect
-                    width={dimensions.width}
+                    width={width}
                     height={dimensions.height}
                     rx={14}
                     fill="transparent"
                     onTouchStart={zoom.dragStart}
                     onTouchMove={zoom.dragMove}
                     onTouchEnd={zoom.dragEnd}
-                    onMouseDown={zoom.dragStart}
-                    onMouseMove={zoom.dragMove}
+                    onMouseDown={(e) => {
+                      zoom.dragStart(e);
+                      handleClick(e);
+                    }}
+                    onMouseMove={(e) => {
+                      zoom.dragMove(e);
+                      if (!zoom.isDragging) {
+                        handleMouseOver(e);
+                      }
+                    }}
                     onMouseUp={zoom.dragEnd}
                     onMouseLeave={() => {
                       if (zoom.isDragging) zoom.dragEnd();
+                      setHoverCharacter("");
                     }}
                     onDoubleClick={(event) => {
                       const point = localPoint(event) || { x: 0, y: 0 };
                       zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
+                    }}
+                    style={{
+                      pointerEvents: zoom.isDragging ? "all" : "none"
                     }}
                   />
                 </svg>
@@ -180,6 +204,8 @@ function App() {
       <CharacterList
         hoverCharacter={hoverCharacter}
         activeCharacter={activeCharacter}
+        setActiveCharacter={setActiveCharacter}
+        setHoverCharacter={setHoverCharacter}
       />
     </ThemeProvider>
   );
