@@ -1,13 +1,19 @@
-import React from 'react';
-import { Stack, TextField, Typography, Button, Fab } from '@mui/material';
-import { CloseRounded, PsychologyAltRounded } from '@mui/icons-material';
-import { CharacterPortrait, CONTAINER_HEIGHT, CONTAINER_WIDTH } from './CharacterPortrait';
-import { formatName } from '../utils';
-import tvStatic from '../assets/tv-static.gif';
+import React from "react";
+import { Stack, TextField, Typography, Button, Fab } from "@mui/material";
+import { CloseRounded, PsychologyAltRounded } from "@mui/icons-material";
+import {
+  CharacterPortrait,
+  CONTAINER_HEIGHT,
+  CONTAINER_WIDTH,
+} from "./CharacterPortrait";
+import { formatName } from "../utils";
+import tvStatic from "../assets/tv-static.gif";
 
 type CharacterPortraitSectionProps = {
+  hoverCharacter: string;
+  activeCharacter: string;
   shownCharacter: string;
-  mode: 'challenge' | 'explore';
+  mode: "challenge" | "explore";
   namedCharacters: Set<string>;
   nameInput: string;
   setNameInput: (value: string) => void;
@@ -19,8 +25,12 @@ type CharacterPortraitSectionProps = {
   handleRandomCharacter: () => void;
 };
 
-export const CharacterPortraitSection: React.FC<CharacterPortraitSectionProps> = ({
+export const CharacterPortraitSection: React.FC<
+  CharacterPortraitSectionProps
+> = ({
   shownCharacter,
+  hoverCharacter,
+  activeCharacter,
   mode,
   namedCharacters,
   nameInput,
@@ -29,49 +39,59 @@ export const CharacterPortraitSection: React.FC<CharacterPortraitSectionProps> =
   onNameSubmit,
   onKeyPress,
   setActiveCharacter,
+  setHoverCharacter,
   handleRandomCharacter,
 }) => {
+  const titleText = shownCharacter
+    ? mode === "explore" || namedCharacters.has(shownCharacter)
+      ? formatName(shownCharacter)
+      : "_ ".repeat(formatName(shownCharacter).length).trim()
+    : "COMICOSM 2";
+
   return (
     <>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <Typography variant="h6" sx={{ color: "white" }}>
-          {shownCharacter
-            ? mode === 'explore' || namedCharacters.has(shownCharacter)
-              ? formatName(shownCharacter)
-              : "_ ".repeat(formatName(shownCharacter).length).trim()
-            : "COMICOSM 2"}
-        </Typography>
-        <Fab
-          size="small"
-          onClick={() => {
-            console.log("clicked")
-            setActiveCharacter("")
-            setHoverCharacter("")
-          }}
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Typography
+          variant="h6"
           sx={{
-            borderRadius: 1000,
             color: "white",
-            visibility: shownCharacter ? "visible" : "hidden",
-            backgroundColor: "rgba(255, 255, 255, 0.2)",
-            "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.3)",
+            fontSize: (theme) => {
+              if (titleText.length <= 18) return theme.typography.h6.fontSize;
+              return '1rem';
             },
           }}
         >
-          <CloseRounded
-            fontSize="small"
-            sx={{ width: "16px", height: "16px" }}
-          />
-        </Fab>
+          {titleText}
+        </Typography>
+        {activeCharacter && (
+          <Fab
+            size="small"
+            onClick={() => {
+              console.log("clicked");
+              setActiveCharacter("");
+              setHoverCharacter("");
+            }}
+            sx={{
+              borderRadius: 1000,
+              color: "white",
+              visibility: shownCharacter ? "visible" : "hidden",
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.3)",
+              },
+            }}
+          >
+            <CloseRounded
+              fontSize="small"
+              sx={{ width: "16px", height: "16px" }}
+            />
+          </Fab>
+        )}
       </Stack>
       {shownCharacter ? (
         <>
           <CharacterPortrait id={shownCharacter} />
-          {mode === 'challenge' && (
+          {mode === "challenge" && (
             <>
               <TextField
                 size="small"
@@ -115,7 +135,7 @@ export const CharacterPortraitSection: React.FC<CharacterPortraitSectionProps> =
           />
         </Stack>
       )}
-      {!shownCharacter && mode === 'challenge' && (
+      {!shownCharacter && mode === "challenge" && (
         <Button
           variant="contained"
           onClick={handleRandomCharacter}
@@ -133,4 +153,4 @@ export const CharacterPortraitSection: React.FC<CharacterPortraitSectionProps> =
       )}
     </>
   );
-}; 
+};

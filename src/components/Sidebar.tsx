@@ -105,6 +105,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       >
         <ModeToggle mode={mode} setMode={setMode} />
         <CharacterPortraitSection
+          hoverCharacter={hoverCharacter}
+          activeCharacter={activeCharacter}
           shownCharacter={shownCharacter}
           mode={mode}
           namedCharacters={namedCharacters}
