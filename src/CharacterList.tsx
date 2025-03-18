@@ -1,56 +1,86 @@
 import React from "react";
+import { Stack } from "@mui/material";
+import { SIDEBAR_WIDTH } from "./constants";
+import { ModeToggle } from "./components/ModeToggle";
+import { CharacterPortraitSection } from "./components/CharacterPortraitSection";
+import { CharacterList } from "./components/CharacterList";
 import { uniqueCharacters } from "./characters";
+import { formatName } from "./utils";
 import {
   ListItem,
   ListItemText,
-  Stack,
   TextField,
   Typography,
   Button,
-  IconButton,
-  Box,
   Fab,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 import {
   CharacterPortrait,
   CONTAINER_HEIGHT,
   CONTAINER_WIDTH,
 } from "./CharacterPortrait";
-import { formatName } from "./utils";
 import tvStatic from "./assets/tv-static.gif";
-import { SIDEBAR_WIDTH } from "./constants";
 import {
   CloseRounded,
   PsychologyAltRounded,
-  ShuffleRounded,
 } from "@mui/icons-material";
 
-type CharacterListProps = {
+type SidebarProps = {
   hoverCharacter: string;
   activeCharacter: string;
   setActiveCharacter: (character: string) => void;
   setHoverCharacter: (character: string) => void;
+  namedCharacters: Set<string>;
+  setNamedCharacters: React.Dispatch<React.SetStateAction<Set<string>>>;
 };
 
-export const CharacterList: React.FC<CharacterListProps> = ({
+export const Sidebar: React.FC<SidebarProps> = ({
   hoverCharacter,
   activeCharacter,
   setActiveCharacter,
   setHoverCharacter,
+  namedCharacters,
+  setNamedCharacters,
 }) => {
   const [search, setSearch] = React.useState("");
-
-  const filteredCharacters = search
-    ? uniqueCharacters.filter((character) =>
-        formatName(character).toLowerCase().includes(search.toLowerCase())
-      )
-    : uniqueCharacters;
+  const [nameInput, setNameInput] = React.useState("");
+  const [incorrectGuess, setIncorrectGuess] = React.useState(false);
+  const [mode, setMode] = React.useState<'challenge' | 'explore'>('challenge');
 
   const shownCharacter = hoverCharacter || activeCharacter;
 
+  // Reset incorrectGuess when character changes
+  React.useEffect(() => {
+    setIncorrectGuess(false);
+  }, [shownCharacter]);
+
   const handleRandomCharacter = () => {
-    const randomIndex = Math.floor(Math.random() * uniqueCharacters.length);
-    setActiveCharacter(uniqueCharacters[randomIndex]);
+    const unnamedCharacters = uniqueCharacters.filter(
+      (char) => !namedCharacters.has(char)
+    );
+    if (unnamedCharacters.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * unnamedCharacters.length);
+    setActiveCharacter(unnamedCharacters[randomIndex]);
+  };
+
+  const handleNameSubmit = () => {
+    if (!shownCharacter) return;
+    const correctName = formatName(shownCharacter);
+    if (nameInput.trim().toLowerCase() === correctName.toLowerCase()) {
+      setNamedCharacters((prev) => new Set([...prev, shownCharacter]));
+      setNameInput("");
+      setIncorrectGuess(false);
+    } else {
+      setIncorrectGuess(true);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleNameSubmit();
+    }
   };
 
   return (
@@ -90,95 +120,33 @@ export const CharacterList: React.FC<CharacterListProps> = ({
           backgroundColor: (theme) => theme.palette.primary.main,
           top: 0,
           zIndex: 1000,
+          minHeight: "360px",
+          maxHeight: "360px",
+          overflow: "auto",
         }}
       >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <Typography variant="h6" sx={{ color: "white" }}>
-            {shownCharacter ? formatName(shownCharacter) : "COMICOSM 2"}
-          </Typography>
-          <Fab
-            size="small"
-            onClick={() => setActiveCharacter("")}
-            sx={{
-              borderRadius: 1000,
-              color: "white",
-              visibility: shownCharacter ? "visible" : "hidden",
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.3)",
-              },
-            }}
-          >
-            <CloseRounded
-              fontSize="small"
-              sx={{ width: "16px", height: "16px" }}
-            />
-          </Fab>
-        </Stack>
-        {shownCharacter ? (
-          <>
-            <CharacterPortrait id={shownCharacter} />
-          </>
-        ) : (
-          <Stack spacing={1}>
-            <img
-              src={tvStatic}
-              style={{
-                borderRadius: 30,
-              }}
-              height={CONTAINER_HEIGHT}
-              width={CONTAINER_WIDTH}
-            />
-          </Stack>
-        )}
-        <Button
-          variant="contained"
-          onClick={handleRandomCharacter}
-          startIcon={<PsychologyAltRounded />}
-          sx={{
-            borderRadius: 1000,
-            backgroundColor: "rgba(255, 255, 255, 0.2)",
-            "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.3)",
-            },
-          }}
-        >
-          Random Character
-        </Button>
-        <TextField
-          size="small"
-          sx={{
-            ".MuiInputBase-root": {
-              borderRadius: 1000,
-              backgroundColor: "white",
-            },
-            width: "100%",
-          }}
-          placeholder="Search for characters"
-          onChange={(e) => setSearch(e.target.value)}
+        <ModeToggle mode={mode} setMode={setMode} />
+        <CharacterPortraitSection
+          shownCharacter={shownCharacter}
+          mode={mode}
+          namedCharacters={namedCharacters}
+          nameInput={nameInput}
+          setNameInput={setNameInput}
+          incorrectGuess={incorrectGuess}
+          onNameSubmit={handleNameSubmit}
+          onKeyPress={handleKeyPress}
+          setActiveCharacter={setActiveCharacter}
+          handleRandomCharacter={handleRandomCharacter}
         />
       </Stack>
-      {filteredCharacters.map((character) => (
-        <ListItem
-          key={character}
-          onMouseEnter={() => setHoverCharacter(character)}
-          onMouseLeave={() => setHoverCharacter(null)}
-          onClick={() => setActiveCharacter(character)}
-          sx={{
-            cursor: "pointer",
-            height: 24,
-            "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-            },
-          }}
-        >
-          <ListItemText primary={formatName(character)} />
-        </ListItem>
-      ))}
+      <CharacterList
+        search={search}
+        setSearch={setSearch}
+        mode={mode}
+        namedCharacters={namedCharacters}
+        setHoverCharacter={setHoverCharacter}
+        setActiveCharacter={setActiveCharacter}
+      />
     </Stack>
   );
 };

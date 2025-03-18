@@ -8,12 +8,13 @@ import { RectClipPath } from "@visx/clip-path";
 import { ReplayRounded, AddRounded, RemoveRounded } from "@mui/icons-material";
 import comicosm2 from "./assets/comicosm2.jpg";
 import { ThemeProvider } from "./ThemeProvider";
-import { CharacterList } from "./CharacterList";
+import { Sidebar } from "./CharacterList";
 import { useScreenSize } from "./hooks/useScreenSize";
 import { SIDEBAR_WIDTH } from "./constants";
 
 function App() {
   const dimensions = useScreenSize();
+  const [namedCharacters, setNamedCharacters] = React.useState<Set<string>>(new Set());
 
   const [hoverCharacter, setHoverCharacter] = React.useState("");
   const [activeCharacter, setActiveCharacter] = React.useState("");
@@ -201,11 +202,13 @@ function App() {
           </Zoom>
         </div>
       </div>
-      <CharacterList
+      <Sidebar
         hoverCharacter={hoverCharacter}
         activeCharacter={activeCharacter}
         setActiveCharacter={setActiveCharacter}
         setHoverCharacter={setHoverCharacter}
+        namedCharacters={namedCharacters}
+        setNamedCharacters={setNamedCharacters}
       />
     </ThemeProvider>
   );
