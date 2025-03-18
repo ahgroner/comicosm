@@ -46,7 +46,7 @@ export const CharacterPortraitSection: React.FC<
     ? mode === "explore" || namedCharacters.has(shownCharacter)
       ? formatName(shownCharacter)
       : "_ ".repeat(formatName(shownCharacter).length).trim()
-    : "COMICOSM 2";
+    : "Click or hover any character";
 
   return (
     <>
@@ -54,10 +54,11 @@ export const CharacterPortraitSection: React.FC<
         <Typography
           variant="h6"
           sx={{
+            height: "24px",
             color: "white",
             fontSize: (theme) => {
               if (titleText.length <= 18) return theme.typography.h6.fontSize;
-              return '1rem';
+              return "1rem";
             },
           }}
         >
@@ -92,17 +93,30 @@ export const CharacterPortraitSection: React.FC<
         <>
           <CharacterPortrait id={shownCharacter} />
           {mode === "challenge" && (
-            <>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
               <TextField
                 size="small"
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
                 onKeyPress={onKeyPress}
-                placeholder="Type the character's name..."
+                placeholder="Enter name"
                 sx={{
                   ".MuiInputBase-root": {
-                    borderRadius: 1000,
+                    height: "36.5px",
+                    borderRadius: "1000px 0 0 1000px",
+                    border: "none !important",
+                    outline: "none",
                     backgroundColor: "white",
+                    "&:focus, &:hover": {
+                      outline: "none",
+                    },
+                    "& fieldset": {
+                      border: "none"
+                    }
                   },
                   width: "100%",
                 }}
@@ -111,16 +125,16 @@ export const CharacterPortraitSection: React.FC<
                 variant="contained"
                 onClick={onNameSubmit}
                 sx={{
-                  borderRadius: 1000,
+                  borderRadius: "0 1000px 1000px 0",
                   backgroundColor: "rgba(255, 255, 255, 0.2)",
                   "&:hover": {
                     backgroundColor: "rgba(255, 255, 255, 0.3)",
                   },
                 }}
               >
-                {incorrectGuess ? "Try Again" : "Submit Name"}
+                {incorrectGuess ? "Try Again" : "Submit"}
               </Button>
-            </>
+            </Stack>
           )}
         </>
       ) : (

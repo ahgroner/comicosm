@@ -125,7 +125,10 @@ export const CharacterList: React.FC<CharacterListProps> = ({
       {filteredCharacters.map((character) => (
         <ListItem
           key={character}
-          onClick={() => setActiveCharacter(character)}
+          onClick={() => {
+            console.log("clicked", character);
+            setActiveCharacter(character)
+          }}
           sx={{
             cursor: "pointer",
             height: 24,

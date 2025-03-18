@@ -78,29 +78,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         right: 0,
         width: SIDEBAR_WIDTH,
         height: "100vh",
-        overflow: "auto",
-        "&::-webkit-scrollbar": {
-          width: "8px",
-        },
-        "&::-webkit-scrollbar-track": {
-          background: "rgba(255, 255, 255, 0.1)",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          background: "rgba(255, 255, 255, 0.3)",
-          "&:hover": {
-            background: "rgba(255, 255, 255, 0.5)",
-          },
-        },
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <Stack
         sx={{
           gap: 1,
           p: 1,
-          position: "sticky",
           backgroundColor: (theme) => theme.palette.primary.main,
-          top: 0,
-          zIndex: 1000,
+          flexShrink: 0,
         }}
       >
         <ModeToggle mode={mode} setMode={setMode} />
@@ -120,14 +107,33 @@ export const Sidebar: React.FC<SidebarProps> = ({
           handleRandomCharacter={handleRandomCharacter}
         />
       </Stack>
-      <CharacterList
-        search={search}
-        setSearch={setSearch}
-        mode={mode}
-        namedCharacters={namedCharacters}
-        setHoverCharacter={setHoverCharacter}
-        setActiveCharacter={setActiveCharacter}
-      />
+      <Stack
+        sx={{
+          flex: 1,
+          overflow: "auto",
+          "&::-webkit-scrollbar": {
+            width: "8px",
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "rgba(255, 255, 255, 0.1)",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "rgba(255, 255, 255, 0.3)",
+            "&:hover": {
+              background: "rgba(255, 255, 255, 0.5)",
+            },
+          },
+        }}
+      >
+        <CharacterList
+          search={search}
+          setSearch={setSearch}
+          mode={mode}
+          namedCharacters={namedCharacters}
+          setHoverCharacter={setHoverCharacter}
+          setActiveCharacter={setActiveCharacter}
+        />
+      </Stack>
     </Stack>
   );
 };
