@@ -74,6 +74,9 @@ export const CharacterPortraitSection: React.FC<
             }}
             sx={{
               borderRadius: 1000,
+              width: "24px",
+              height: "24px",
+              minHeight: "24px",
               color: "white",
               visibility: shownCharacter ? "visible" : "hidden",
               backgroundColor: "rgba(255, 255, 255, 0.2)",
