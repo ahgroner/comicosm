@@ -18,7 +18,7 @@ export const CharacterList: React.FC<CharacterListProps> = ({
   setSearch,
   mode,
   namedCharacters,
-  setHoverCharacter,
+  // setHoverCharacter,
   setActiveCharacter,
 }) => {
   const [selectedTag, setSelectedTag] = React.useState<string | null>(null);
