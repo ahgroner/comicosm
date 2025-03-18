@@ -1,4 +1,4 @@
-export const characters = [
+const characters = [
   "PrincePlanet",
   "Impulse",
   "BlackWidow",
@@ -49,3 +49,5 @@ export const characters = [
   "Clank",
   "Ratchet",
 ];
+
+export const uniqueCharacters = [...new Set(characters)];

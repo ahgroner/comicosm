@@ -9,16 +9,18 @@ import { ReplayRounded, AddRounded, RemoveRounded } from "@mui/icons-material";
 import comicosm2 from "./assets/comicosm2.jpg";
 import { ThemeProvider } from "./ThemeProvider";
 import { CharacterList } from "./CharacterList";
-const width = 800;
-const height = 800;
+import { useScreenSize } from "./hooks/useScreenSize";
+
 function App() {
-  const [hoverCharacter, setHoverCharacter] = React.useState("");
-  const [activeCharacter, setActiveCharacter] = React.useState("");
+  const dimensions = useScreenSize();
+
+  const [hoverCharacter, setHoverCharacter] = React.useState("Pearl");
+  const [activeCharacter, setActiveCharacter] = React.useState("Pearl");
   // const [showMiniMap, setShowMiniMap] = React.useState(true);
-  const handleMouseOver = (e) => {
+  const handleMouseOver = (e: React.MouseEvent<SVGElement>) => {
     setHoverCharacter(e.target.className.baseVal);
   };
-  const handleClick = (e) => {
+  const handleClick = (e: React.MouseEvent<SVGElement>) => {
     setActiveCharacter(e.target.className.baseVal);
   };
 
@@ -36,8 +38,8 @@ function App() {
       <div>
         <div style={{ position: "absolute" }}>
           <Zoom<SVGSVGElement>
-            width={width}
-            height={height}
+            width={dimensions.width}
+            height={dimensions.height}
             scaleXMin={1}
             scaleXMax={10}
             scaleYMin={1}
@@ -52,11 +54,11 @@ function App() {
                     cursor: "pointer",
                     strokeWidth: 0,
                     fill: "rgba(0,0,0,0)",
-                    [`&.${hoverCharacter || 'IGNORE'}`]: {
+                    [`&.${hoverCharacter || "IGNORE"}`]: {
                       stroke: "rgb(255,242,0)",
                       strokeWidth: 3,
                     },
-                    [`&.${activeCharacter  || 'IGNORE'}`]: {
+                    [`&.${activeCharacter || "IGNORE"}`]: {
                       stroke: "rgb(255,242,0)",
                       strokeWidth: 3,
                     },
@@ -64,11 +66,12 @@ function App() {
                 }}
               >
                 <svg
-                  width={width}
-                  height={height}
+                  width={dimensions.width}
+                  height={dimensions.height}
                   fill="none"
                   viewBox="0 0 4096 3186"
                   onMouseOver={handleMouseOver}
+                  onMouseDown={handleClick}
                   onClick={!zoom.isDragging ? handleClick : undefined}
                   style={{
                     cursor: zoom.isDragging ? "grabbing" : "grab",
@@ -76,8 +79,16 @@ function App() {
                   }}
                   ref={zoom.containerRef}
                 >
-                  <RectClipPath id="zoom-clip" width={width} height={height} />
-                  <rect width={width} height={height} rx={14} />
+                  <RectClipPath
+                    id="zoom-clip"
+                    width={dimensions.width}
+                    height={dimensions.height}
+                  />
+                  <rect
+                    width={dimensions.width}
+                    height={dimensions.height}
+                    rx={14}
+                  />
                   <g transform={zoom.toString()}>
                     <image
                       href={comicosm2}
@@ -85,11 +96,11 @@ function App() {
                       height="3186"
                       preserveAspectRatio="xMidYMid meet"
                     />
-                    <CharacterPaths onMouseOver={handleMouseOver} />
+                    <CharacterPaths />
                   </g>
                   <rect
-                    width={width}
-                    height={height}
+                    width={dimensions.width}
+                    height={dimensions.height}
                     rx={14}
                     fill="transparent"
                     onTouchStart={zoom.dragStart}
@@ -166,7 +177,10 @@ function App() {
           </Zoom>
         </div>
       </div>
-      <CharacterList / >
+      <CharacterList
+        hoverCharacter={hoverCharacter}
+        activeCharacter={activeCharacter}
+      />
     </ThemeProvider>
   );
 }

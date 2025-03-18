@@ -1,7 +1,4 @@
-import { type SVGProps } from "react";
-interface IProps extends SVGProps<SVGSVGElement> {}
-
-export const CharacterPaths = (props: IProps) => {
+export const CharacterPaths = () => {
   return (
     <>
       <path
