@@ -9,6 +9,7 @@ type ModeToggleProps = {
 export const ModeToggle: React.FC<ModeToggleProps> = ({ mode, setMode }) => {
   return (
     <ToggleButtonGroup
+      size="small"
       value={mode}
       exclusive
       onChange={(_, newMode) => newMode && setMode(newMode)}

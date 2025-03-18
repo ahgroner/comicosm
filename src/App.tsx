@@ -46,9 +46,9 @@ function App() {
           <Zoom<SVGSVGElement>
             width={width}
             height={dimensions.height}
-            scaleXMin={0.6}
+            scaleXMin={1.0}
             scaleXMax={12}
-            scaleYMin={0.6}
+            scaleYMin={1.0}
             scaleYMax={12}
             initialTransformMatrix={initialTransform}
           >

@@ -41,6 +41,7 @@ export const CharacterList: React.FC<CharacterListProps> = ({
             borderRadius: 1000,
             backgroundColor: "white",
           },
+          px: 1,
           width: "100%",
         }}
         placeholder="Search for characters"

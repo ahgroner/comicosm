@@ -54,6 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   // Reset incorrectGuess when character changes
   React.useEffect(() => {
     setIncorrectGuess(false);
+    setNameInput("");
   }, [shownCharacter]);
 
   const handleRandomCharacter = () => {
@@ -120,9 +121,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           backgroundColor: (theme) => theme.palette.primary.main,
           top: 0,
           zIndex: 1000,
-          minHeight: "360px",
-          maxHeight: "360px",
-          overflow: "auto",
         }}
       >
         <ModeToggle mode={mode} setMode={setMode} />
