@@ -1,7 +1,8 @@
 import React from 'react';
-import { ListItem, ListItemText, TextField, Typography } from '@mui/material';
+import { ListItem, ListItemText, TextField, Typography, Chip, Stack } from '@mui/material';
 import { uniqueCharacters } from '../characters';
 import { formatName } from '../utils';
+import { characters } from '../characters';
 
 type CharacterListProps = {
   search: string;
@@ -20,11 +21,40 @@ export const CharacterList: React.FC<CharacterListProps> = ({
   setHoverCharacter,
   setActiveCharacter,
 }) => {
-  const filteredCharacters = search
-    ? uniqueCharacters.filter((character) =>
-        formatName(character).toLowerCase().includes(search.toLowerCase())
-      )
-    : uniqueCharacters;
+  const [selectedTag, setSelectedTag] = React.useState<string | null>(null);
+
+  // Get unique tags and their counts
+  const tagCounts = React.useMemo(() => {
+    const counts = new Map<string, { total: number, found: number }>();
+    
+    characters.forEach(char => {
+      char.tags.forEach(tag => {
+        if (!counts.has(tag)) {
+          counts.set(tag, { total: 0, found: 0 });
+        }
+        const count = counts.get(tag)!;
+        count.total++;
+        if (namedCharacters.has(char.name)) {
+          count.found++;
+        }
+      });
+    });
+    
+    return counts;
+  }, [namedCharacters]);
+
+  // Filter characters by both search and tag
+  const filteredCharacters = React.useMemo(() => {
+    return uniqueCharacters.filter((character) => {
+      const matchesSearch = !search || 
+        formatName(character).toLowerCase().includes(search.toLowerCase());
+      
+      const matchesTag = !selectedTag ||
+        characters.find(c => c.name === character)?.tags.includes(selectedTag);
+      
+      return matchesSearch && matchesTag;
+    });
+  }, [search, selectedTag]);
 
   return (
     <>
@@ -34,6 +64,49 @@ export const CharacterList: React.FC<CharacterListProps> = ({
       >
         {namedCharacters.size}/{uniqueCharacters.length} characters found
       </Typography>
+
+      {/* Tag filters */}
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{
+          flexWrap: 'wrap',
+          gap: '2px',
+          px: 1,
+          py: 2,
+        }}
+      >
+        {Array.from(tagCounts.entries()).map(([tag, counts]) => {
+          const selected = selectedTag === tag;
+          return (
+            <Chip
+              key={tag}
+              label={`${tag} ${mode === 'challenge' ? 
+                `${counts.found}/${counts.total}` : 
+                `(${counts.total})`}`}
+              onClick={() => setSelectedTag(selected ? null : tag)}
+              onDelete={selected ? () => setSelectedTag(null) : undefined}
+              deleteIcon={<></>}
+              sx={{
+                fontSize: '12px',
+                padding: 0,
+                backgroundColor: selected ? 
+                  'rgba(255,255,255,0.3)':
+                  'rgba(255, 255, 255, 0)'
+                  ,
+                borderRadius: '4px',
+                border: selected ? '1px solid rgba(255,255,255,1)' : '1px solid rgba(255,255,255,0.3)',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                },
+              }}
+            />
+          );
+        })}
+      </Stack>
+
+      {/* Search input */}
       <TextField
         size="small"
         sx={{
@@ -47,11 +120,11 @@ export const CharacterList: React.FC<CharacterListProps> = ({
         placeholder="Search for characters"
         onChange={(e) => setSearch(e.target.value)}
       />
+
+      {/* Character list */}
       {filteredCharacters.map((character) => (
         <ListItem
           key={character}
-          // onMouseEnter={() => setHoverCharacter(character)}
-          // onMouseLeave={() => setHoverCharacter("")}
           onClick={() => setActiveCharacter(character)}
           sx={{
             cursor: "pointer",

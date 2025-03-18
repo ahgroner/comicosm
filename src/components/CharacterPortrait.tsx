@@ -1,6 +1,6 @@
 import { styled } from "@mui/material/styles";
 import React from "react";
-import comicosm2 from "./assets/comicosm2.jpg";
+import comicosm2 from "../assets/comicosm2.jpg";
 
 const IMAGE_WIDTH = 6750;
 const IMAGE_HEIGHT = 5250;

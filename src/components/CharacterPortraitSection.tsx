@@ -1,7 +1,7 @@
 import React from 'react';
 import { Stack, TextField, Typography, Button, Fab } from '@mui/material';
 import { CloseRounded, PsychologyAltRounded } from '@mui/icons-material';
-import { CharacterPortrait, CONTAINER_HEIGHT, CONTAINER_WIDTH } from '../CharacterPortrait';
+import { CharacterPortrait, CONTAINER_HEIGHT, CONTAINER_WIDTH } from './CharacterPortrait';
 import { formatName } from '../utils';
 import tvStatic from '../assets/tv-static.gif';
 
@@ -15,6 +15,7 @@ type CharacterPortraitSectionProps = {
   onNameSubmit: () => void;
   onKeyPress: (e: React.KeyboardEvent) => void;
   setActiveCharacter: (character: string) => void;
+  setHoverCharacter: (character: string) => void;
   handleRandomCharacter: () => void;
 };
 
@@ -46,7 +47,11 @@ export const CharacterPortraitSection: React.FC<CharacterPortraitSectionProps> =
         </Typography>
         <Fab
           size="small"
-          onClick={() => setActiveCharacter("")}
+          onClick={() => {
+            console.log("clicked")
+            setActiveCharacter("")
+            setHoverCharacter("")
+          }}
           sx={{
             borderRadius: 1000,
             color: "white",

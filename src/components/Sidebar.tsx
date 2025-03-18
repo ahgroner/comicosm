@@ -1,31 +1,11 @@
 import React from "react";
 import { Stack } from "@mui/material";
-import { SIDEBAR_WIDTH } from "./constants";
-import { ModeToggle } from "./components/ModeToggle";
-import { CharacterPortraitSection } from "./components/CharacterPortraitSection";
-import { CharacterList } from "./components/CharacterList";
-import { uniqueCharacters } from "./characters";
-import { formatName } from "./utils";
-import {
-  ListItem,
-  ListItemText,
-  TextField,
-  Typography,
-  Button,
-  Fab,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
-import {
-  CharacterPortrait,
-  CONTAINER_HEIGHT,
-  CONTAINER_WIDTH,
-} from "./CharacterPortrait";
-import tvStatic from "./assets/tv-static.gif";
-import {
-  CloseRounded,
-  PsychologyAltRounded,
-} from "@mui/icons-material";
+import { SIDEBAR_WIDTH } from "../constants";
+import { ModeToggle } from "./ModeToggle";
+import { CharacterPortraitSection } from "./CharacterPortraitSection";
+import { CharacterList } from "./CharacterList";
+import { uniqueCharacters } from "../characters";
+import { formatName } from "../utils";
 
 type SidebarProps = {
   hoverCharacter: string;
@@ -134,6 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onNameSubmit={handleNameSubmit}
           onKeyPress={handleKeyPress}
           setActiveCharacter={setActiveCharacter}
+          setHoverCharacter={setHoverCharacter}
           handleRandomCharacter={handleRandomCharacter}
         />
       </Stack>

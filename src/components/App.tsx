@@ -1,16 +1,16 @@
 import { CharacterPaths } from "./CharacterPaths";
-import "./App.css";
+import "../App.css";
 import * as React from "react";
 import { Stack, Button, ButtonGroup } from "@mui/material";
 import { Zoom } from "@visx/zoom";
 import { localPoint } from "@visx/event";
 import { RectClipPath } from "@visx/clip-path";
 import { ReplayRounded, AddRounded, RemoveRounded } from "@mui/icons-material";
-import comicosm2 from "./assets/comicosm2.jpg";
+import comicosm2 from "../assets/comicosm2.jpg";
 import { ThemeProvider } from "./ThemeProvider";
-import { Sidebar } from "./CharacterList";
-import { useScreenSize } from "./hooks/useScreenSize";
-import { SIDEBAR_WIDTH } from "./constants";
+import { Sidebar } from "./Sidebar";
+import { useScreenSize } from "../hooks/useScreenSize";
+import { SIDEBAR_WIDTH } from "../constants";
 
 function App() {
   const dimensions = useScreenSize();
