@@ -163,9 +163,9 @@ export const CharacterList: React.FC<CharacterListProps> = ({
       />
 
       {/* Character list */}
-      {filteredCharacters.map((character) => (
+      {filteredCharacters.map((character, index) => (
         <ListItem
-          key={character}
+          key={index}
           onClick={() => {
             console.log("clicked", character);
             setActiveCharacter(character);
