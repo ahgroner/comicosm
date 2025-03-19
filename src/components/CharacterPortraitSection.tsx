@@ -6,7 +6,7 @@ import {
   CONTAINER_HEIGHT,
   CONTAINER_WIDTH,
 } from "./CharacterPortrait";
-import { formatName } from "../utils";
+import { formatName, secretName } from "../utils";
 import tvStatic from "../assets/tv-static.gif";
 
 type CharacterPortraitSectionProps = {
@@ -18,6 +18,7 @@ type CharacterPortraitSectionProps = {
   nameInput: string;
   setNameInput: (value: string) => void;
   incorrectGuess: boolean;
+  setIncorrectGuess: (value: boolean) => void;
   onNameSubmit: () => void;
   onKeyPress: (e: React.KeyboardEvent) => void;
   setActiveCharacter: (character: string) => void;
@@ -29,8 +30,6 @@ export const CharacterPortraitSection: React.FC<
   CharacterPortraitSectionProps
 > = ({
   shownCharacter,
-  hoverCharacter,
-  activeCharacter,
   mode,
   namedCharacters,
   nameInput,
@@ -41,12 +40,15 @@ export const CharacterPortraitSection: React.FC<
   setActiveCharacter,
   setHoverCharacter,
   handleRandomCharacter,
+  setIncorrectGuess,
 }) => {
   const titleText = shownCharacter
     ? mode === "explore" || namedCharacters.has(shownCharacter)
       ? formatName(shownCharacter)
-      : "_ ".repeat(formatName(shownCharacter).length).trim()
+      : secretName(shownCharacter)
     : "Click or hover any character";
+
+  const isNamedCharacter = namedCharacters.has(shownCharacter);
 
   return (
     <>
@@ -64,7 +66,7 @@ export const CharacterPortraitSection: React.FC<
         >
           {titleText}
         </Typography>
-        {activeCharacter && (
+        {shownCharacter && (
           <Fab
             size="small"
             onClick={() => {
@@ -95,7 +97,7 @@ export const CharacterPortraitSection: React.FC<
       {shownCharacter ? (
         <>
           <CharacterPortrait id={shownCharacter} />
-          {mode === "challenge" && (
+          {mode === "challenge" && !isNamedCharacter && (
             <Stack
               direction="row"
               alignItems="center"
@@ -104,7 +106,10 @@ export const CharacterPortraitSection: React.FC<
               <TextField
                 size="small"
                 value={nameInput}
-                onChange={(e) => setNameInput(e.target.value)}
+                onChange={(e) => {
+                  setIncorrectGuess(false);
+                  setNameInput(e.target.value)
+                }}
                 onKeyPress={onKeyPress}
                 placeholder="Enter name"
                 sx={{
@@ -128,6 +133,8 @@ export const CharacterPortraitSection: React.FC<
                 variant="contained"
                 onClick={onNameSubmit}
                 sx={{
+                  flexGrow: 1,
+                  flexShrink: 0,
                   borderRadius: "0 1000px 1000px 0",
                   backgroundColor: "rgba(255, 255, 255, 0.2)",
                   "&:hover": {

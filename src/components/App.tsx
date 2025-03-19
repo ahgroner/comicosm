@@ -155,6 +155,7 @@ function App() {
                     variant="contained"
                     orientation="vertical"
                     sx={{
+                      boxShadow: "none",
                       padding: 1,
                       opacity: 0.7,
                       "&:hover": {

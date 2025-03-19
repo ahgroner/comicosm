@@ -6,3 +6,7 @@ export const formatName = (name: string): string => {
     .replace(/\b\w/g, c => c.toUpperCase()) // Capitalize first letter of each word
     .replace(/\B\w/g, c => c.toLowerCase()); // Lowercase rest of letters
 }; 
+
+export const secretName = (name: string): string => {
+  return formatName(name).replace(/[^\s]/g, '_');
+};

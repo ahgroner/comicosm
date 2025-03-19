@@ -1,13 +1,20 @@
-import React from 'react';
-import { ListItem, ListItemText, TextField, Typography, Chip, Stack } from '@mui/material';
-import { uniqueCharacters } from '../characters';
-import { formatName } from '../utils';
-import { characters } from '../characters';
+import React from "react";
+import {
+  ListItem,
+  ListItemText,
+  TextField,
+  Typography,
+  Chip,
+  Stack,
+} from "@mui/material";
+import { uniqueCharacters } from "../characters";
+import { formatName } from "../utils";
+import { characters } from "../characters";
 
 type CharacterListProps = {
   search: string;
   setSearch: (value: string) => void;
-  mode: 'challenge' | 'explore';
+  mode: "challenge" | "explore";
   namedCharacters: Set<string>;
   setHoverCharacter: (character: string) => void;
   setActiveCharacter: (character: string) => void;
@@ -22,13 +29,18 @@ export const CharacterList: React.FC<CharacterListProps> = ({
   setActiveCharacter,
 }) => {
   const [selectedTag, setSelectedTag] = React.useState<string | null>(null);
+  const isInitialRender = React.useRef(true);
+
+  React.useEffect(() => {
+    isInitialRender.current = false;
+  }, []);
 
   // Get unique tags and their counts
   const tagCounts = React.useMemo(() => {
-    const counts = new Map<string, { total: number, found: number }>();
-    
-    characters.forEach(char => {
-      char.tags.forEach(tag => {
+    const counts = new Map<string, { total: number; found: number }>();
+
+    characters.forEach((char) => {
+      char.tags.forEach((tag) => {
         if (!counts.has(tag)) {
           counts.set(tag, { total: 0, found: 0 });
         }
@@ -39,39 +51,65 @@ export const CharacterList: React.FC<CharacterListProps> = ({
         }
       });
     });
-    
+
     return counts;
   }, [namedCharacters]);
 
   // Filter characters by both search and tag
   const filteredCharacters = React.useMemo(() => {
     return uniqueCharacters.filter((character) => {
-      const matchesSearch = !search || 
+      const matchesSearch =
+        !search ||
         formatName(character).toLowerCase().includes(search.toLowerCase());
-      
-      const matchesTag = !selectedTag ||
-        characters.find(c => c.name === character)?.tags.includes(selectedTag);
-      
+
+      const matchesTag =
+        !selectedTag ||
+        characters
+          .find((c) => c.name === character)
+          ?.tags.includes(selectedTag);
+
       return matchesSearch && matchesTag;
     });
   }, [search, selectedTag]);
 
   return (
     <>
-      <Typography
-        variant="body2"
-        sx={{ color: "white", textAlign: "center" }}
-      >
-        {namedCharacters.size}/{uniqueCharacters.length} characters found
-      </Typography>
-
+      {mode === "challenge" && (
+        <Typography
+          key={namedCharacters.size}
+          variant="h6"
+          sx={{
+            color: "white",
+            textAlign: "center",
+            animation: isInitialRender.current
+              ? "none"
+              : "pulse 0.5s ease-in-out",
+            "@keyframes pulse": {
+              "0%": {
+                transform: "scale(1)",
+                color: "white",
+              },
+              "50%": {
+                transform: "scale(1.1)",
+                color: "#FFD700", // bright yellow
+              },
+              "100%": {
+                transform: "scale(1)",
+                color: "white",
+              },
+            },
+          }}
+        >
+          {namedCharacters.size}/{uniqueCharacters.length} characters found
+        </Typography>
+      )}
       {/* Tag filters */}
       <Stack
         direction="row"
         spacing={1}
         sx={{
-          flexWrap: 'wrap',
-          gap: '2px',
+          flexWrap: "wrap",
+          gap: "2px",
           px: 1,
           py: 2,
         }}
@@ -81,24 +119,27 @@ export const CharacterList: React.FC<CharacterListProps> = ({
           return (
             <Chip
               key={tag}
-              label={`${tag} ${mode === 'challenge' ? 
-                `${counts.found}/${counts.total}` : 
-                `(${counts.total})`}`}
+              label={`${tag} ${
+                mode === "challenge"
+                  ? `${counts.found}/${counts.total}`
+                  : `(${counts.total})`
+              }`}
               onClick={() => setSelectedTag(selected ? null : tag)}
               onDelete={selected ? () => setSelectedTag(null) : undefined}
               deleteIcon={<></>}
               sx={{
-                fontSize: '12px',
+                fontSize: "12px",
                 padding: 0,
-                backgroundColor: selected ? 
-                  'rgba(255,255,255,0.3)':
-                  'rgba(255, 255, 255, 0)'
-                  ,
-                borderRadius: '4px',
-                border: selected ? '1px solid rgba(255,255,255,1)' : '1px solid rgba(255,255,255,0.3)',
-                color: 'white',
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                backgroundColor: selected
+                  ? "rgba(255,255,255,0.3)"
+                  : "rgba(255, 255, 255, 0)",
+                borderRadius: "4px",
+                border: selected
+                  ? "1px solid rgba(255,255,255,1)"
+                  : "1px solid rgba(255,255,255,0.3)",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.2)",
                 },
               }}
             />
@@ -127,7 +168,7 @@ export const CharacterList: React.FC<CharacterListProps> = ({
           key={character}
           onClick={() => {
             console.log("clicked", character);
-            setActiveCharacter(character)
+            setActiveCharacter(character);
           }}
           sx={{
             cursor: "pointer",
@@ -135,12 +176,13 @@ export const CharacterList: React.FC<CharacterListProps> = ({
             "&:hover": {
               backgroundColor: "rgba(255, 255, 255, 0.1)",
             },
-            opacity: mode === 'explore' || namedCharacters.has(character) ? 1 : 0.5,
+            opacity:
+              mode === "explore" || namedCharacters.has(character) ? 1 : 0.5,
           }}
         >
           <ListItemText
             primary={
-              mode === 'explore' || namedCharacters.has(character)
+              mode === "explore" || namedCharacters.has(character)
                 ? formatName(character)
                 : "_ ".repeat(formatName(character).length).trim()
             }
@@ -149,4 +191,4 @@ export const CharacterList: React.FC<CharacterListProps> = ({
       ))}
     </>
   );
-}; 
+};
