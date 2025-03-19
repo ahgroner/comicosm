@@ -58,6 +58,9 @@ export const CharacterPortraitSection: React.FC<
           sx={{
             height: "24px",
             color: "white",
+            textAlign: "center",
+            flexShrink: 0,
+            flexGrow: 1,
             fontSize: (theme) => {
               if (titleText.length <= 18) return theme.typography.h6.fontSize;
               return "1rem";

@@ -14,7 +14,17 @@ import { SIDEBAR_WIDTH } from "../constants";
 
 function App() {
   const dimensions = useScreenSize();
-  const [namedCharacters, setNamedCharacters] = React.useState<Set<string>>(new Set());
+  const [namedCharacters, setNamedCharacters] = React.useState<Set<string>>(
+    new Set(JSON.parse(localStorage.getItem("namedCharacters") || "[]"))
+  );
+
+  // sync named characters to local storage
+  React.useEffect(() => {
+    localStorage.setItem(
+      "namedCharacters",
+      JSON.stringify(Array.from(namedCharacters))
+    );
+  }, [namedCharacters]);
 
   const [hoverCharacter, setHoverCharacter] = React.useState("");
   const [activeCharacter, setActiveCharacter] = React.useState("");
@@ -22,6 +32,9 @@ function App() {
   const handleMouseOver = (e: React.MouseEvent<SVGElement>) => {
     const target = e.target as SVGPathElement;
     setHoverCharacter(target.className.baseVal);
+  };
+  const handleMouseOut = (e: React.MouseEvent<SVGElement>) => {
+    setHoverCharacter("");
   };
   const handleClick = (e: React.MouseEvent<SVGElement>) => {
     const target = e.target as SVGPathElement;
@@ -68,7 +81,7 @@ function App() {
                       strokeAlignment: "outer",
                     },
                     [`&.${activeCharacter || "IGNORE"}`]: {
-                      stroke: "rgb(255,242,0)", 
+                      stroke: "rgb(255,242,0)",
                       strokeWidth: 3,
                       strokeLinejoin: "round",
                       strokeLinecap: "round",
@@ -84,6 +97,7 @@ function App() {
                   fill="none"
                   viewBox="0 0 4096 3186"
                   onMouseOver={handleMouseOver}
+                  onMouseOut={handleMouseOut}
                   onMouseDown={handleClick}
                   // onClick={!zoom.isDragging ? handleClick : undefined}
                   style={{
@@ -97,11 +111,7 @@ function App() {
                     width={width}
                     height={dimensions.height}
                   />
-                  <rect
-                    width={width}
-                    height={dimensions.height}
-                    rx={14}
-                  />
+                  <rect width={width} height={dimensions.height} rx={14} />
                   <g transform={zoom.toString()}>
                     <image
                       href={comicosm2}
@@ -139,7 +149,7 @@ function App() {
                       zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
                     }}
                     style={{
-                      pointerEvents: zoom.isDragging ? "all" : "none"
+                      pointerEvents: zoom.isDragging ? "all" : "none",
                     }}
                   />
                 </svg>
